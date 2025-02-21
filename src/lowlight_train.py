@@ -1,19 +1,12 @@
 import torch
-import torch.nn as nn
-import torchvision
-import torch.backends.cudnn as cudnn
 import torch.optim
 import os
-import sys
 import argparse
-import time
 import dataloader
 import model
 import Myloss
 import numpy as np
-from torchvision import transforms
 from torch.utils.tensorboard import SummaryWriter
-
 
 def weights_init(m):
     classname = m.__class__.__name__
@@ -22,7 +15,6 @@ def weights_init(m):
     elif classname.find('BatchNorm') != -1:
         m.weight.data.normal_(1.0, 0.02)
         m.bias.data.fill_(0)
-
 
 def train(config):
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -108,12 +100,3 @@ if __name__ == "__main__":
         os.mkdir(config.snapshots_folder)
 
     train(config)
-
-
-
-
-
-
-
-
-
