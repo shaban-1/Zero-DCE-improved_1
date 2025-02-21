@@ -12,7 +12,7 @@ class enhance_net_nopool(nn.Module):
 		self.relu = nn.ReLU(inplace=True)
 
 		number_f = 16
-		self.e_conv1 = nn.Conv2d(3, number_f, 3, stride=1, padding=1)
+		self.e_conv1 = nn.Conv2d(1, number_f, 3, stride=1, padding=1)
 		self.e_conv2 = nn.Conv2d(number_f, number_f, 3, stride=1, padding=1)
 		self.e_conv3 = nn.Conv2d(number_f, number_f, 3, stride=1, padding=1)
 		self.e_conv4 = nn.Conv2d(number_f, number_f, 3, stride=1, padding=1)
