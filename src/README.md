@@ -59,13 +59,13 @@ python clahe_and_zero.py
 | Zero-DCE | 0.0036 | 24.4896 | 0.9340 |
 .
 
-
 при num_epochs = 100 и train_batch_size = 8 и num_workers = 4.
 
 | Метод    | MSE    | PSNR    | SSIM   |
 |----------|--------|---------|--------|
 | CLAHE    | 0.0145 | 18.4194 | 0.7299 |
 | Zero-DCE | 0.0050 | 23.0327 | 0.9151 |
+.
 
 при num_epochs = 50 и train_batch_size = 8 и num_workers = 8.
 
@@ -73,10 +73,12 @@ python clahe_and_zero.py
 |----------|--------|---------|--------|
 | CLAHE    | 0.0145 | 18.4194 | 0.7299 |
 | Zero-DCE | 0.0043 | 23.7371 | 0.9309 |
+.
 
-*при num_epochs = 50 и train_batch_size = 8 и num_workers = 8.
+при num_epochs = 199 и train_batch_size = 4 и num_workers = 4. стандартный
 
 | Метод    | MSE    | PSNR    | SSIM   |
 |----------|--------|---------|--------|
 | CLAHE    | 0.0145 | 18.4194 | 0.7299 |
-| Zero-DCE | 0.0043 | 23.7371 | 0.9309 |
+| Zero-DCE | 0.0037 | 24.3467 | 0.9314 |
+

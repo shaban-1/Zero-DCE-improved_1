@@ -150,7 +150,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Image Enhancement with Zero-DCE and CLAHE + Gamma Correction")
     parser.add_argument("--input_dir", type=str, default="C:/Users/sevda/PycharmProjects/Neural Network/Zero-DCE-improved/src/data/test_data/DICM/", help="Путь к директории с изображениями для обработки")
     parser.add_argument("--output_dir", type=str, default="best_images", help="Путь для сохранения лучших изображений")
-    parser.add_argument("--model_path", type=str, default="snapshots/Epoch50.pth", help="Путь к модели Zero-DCE")
+    parser.add_argument("--model_path", type=str, default="snapshots/Epoch199.pth", help="Путь к модели Zero-DCE")
 
     args = parser.parse_args()
     main(args.input_dir, args.output_dir, args.model_path)
