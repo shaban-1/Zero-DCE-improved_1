@@ -1,19 +1,12 @@
 import os
-import sys
-
 import torch
 import torch.utils.data as data
-
 import numpy as np
 from PIL import Image
 import glob
 import random
-import cv2
 
 random.seed(1143)
-
-
-# В файле dataloader.py измените функцию populate_train_list:
 
 def populate_train_list(lowlight_images_path):
     image_list_lowlight = glob.glob(
@@ -23,7 +16,6 @@ def populate_train_list(lowlight_images_path):
     image_list_lowlight = [f for f in image_list_lowlight if "_mask" not in f]
     random.shuffle(image_list_lowlight)
     return image_list_lowlight
-
 
 class lowlight_loader(data.Dataset):
 
@@ -42,7 +34,5 @@ class lowlight_loader(data.Dataset):
       data_lowlight = torch.from_numpy(data_lowlight).float()
       return data_lowlight.unsqueeze(0)  # Получаем тензор размерности (1, H, W)
 
-
     def __len__(self):
         return len(self.data_list)
-
