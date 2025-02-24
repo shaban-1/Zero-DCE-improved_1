@@ -10,7 +10,7 @@
 
 <div style="display: flex; justify-content: space-around; text-align: center;">
     <figure style="width: 30%; height: auto;">
-        <img src="../src/data/test_data/DICM/benign%20(436).png" alt="Оригинал" style="width: 100%; height: auto;"/>
+        <img src="../src/data/test_data/DICM/malignant (11)-sharpened-sharpened.png" alt="Оригинал" style="width: 100%; height: auto;"/>
         <figcaption>Оригинал</figcaption>
     </figure>
     <figure style="width: 30%; height: auto;">
@@ -48,7 +48,10 @@ Execute the following command to start testing:
 ``` bash
 python clahe_and_zero.py 
 ```
-
+Установить куда на свой пк
+``` bash
+ pip install torch==2.0.1+cu118 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+```
 
 ## Метрики
 при num_epochs = 200 и train_batch_size = 8 и num_workers = 4.
@@ -82,3 +85,9 @@ python clahe_and_zero.py
 | CLAHE    | 0.0145 | 18.4194 | 0.7299 |
 | Zero-DCE | 0.0037 | 24.3467 | 0.9314 |
 
+### добавил несколько метрик: Average Entropy, Edge Intensity, BRISQUE, средние значения (версия 2.1)
+
+| Метод    | MSE    | PSNR    | SSIM   | Average Entropy | Edge Intensity | BRISQUE |
+|----------|--------|---------|--------|-----------------|----------------|---------|
+| CLAHE    | 0.0141 | 18.7412 | 0.7641 | 0.0271          | 0.0985         | 46.2529 |
+| Zero-DCE | 0.0039 | 24.6454 | 0.9361 | 0.0495          | 0.0752         | 46.8259 |
