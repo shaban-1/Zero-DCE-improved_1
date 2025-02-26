@@ -1,23 +1,7 @@
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from torchvision.models.vgg import vgg16
-
-
-class L_color(nn.Module):
-
-    def __init__(self):
-        super(L_color, self).__init__()
-
-    def forward(self, x ):
-        b,c,h,w = x.shape
-        mean_rgb = torch.mean(x,[2,3],keepdim=True)
-        mr,mg, mb = torch.split(mean_rgb, 1, dim=1)
-        Drg = torch.pow(mr-mg,2)
-        Drb = torch.pow(mr-mb,2)
-        Dgb = torch.pow(mb-mg,2)
-        k = torch.pow(torch.pow(Drg,2) + torch.pow(Drb,2) + torch.pow(Dgb,2),0.5)
-        return k
+import torch
+from torch import nn as nn
+from torch.nn import functional as F
 
 
 class L_spa(nn.Module):
@@ -80,6 +64,37 @@ class L_exp(nn.Module):
         d = torch.mean(torch.pow(mean- torch.FloatTensor([self.mean_val] ).cuda(),2))
         return d
 
+
+class Exposure_control_loss(nn.Module):
+    def __init__(self, patch_size, mean_val):
+        super(Exposure_control_loss, self).__init__()
+        # print(1)
+        self.pool = nn.AvgPool2d(patch_size)
+        self.mean_val = mean_val
+
+    def forward(self, x):
+        b, c, h, w = x.shape
+        x = torch.mean(x, 1, keepdim=True)
+        mean = self.pool(x)
+
+        d = torch.mean(torch.pow(mean - torch.FloatTensor([self.mean_val]).cuda(), 2))
+        return d
+
+
+class Color_constancy_loss(nn.Module):
+    def __init__(self):
+        super(Color_constancy_loss, self).__init__()
+
+    def forward(self, x):
+        b, c, h, w = x.shape
+        mean_rgb = torch.mean(x, [2, 3], keepdim=True)
+        mr, mg, mb = torch.split(mean_rgb, 1, dim=1)
+        Drg = torch.pow(mr - mg, 2)
+        Drb = torch.pow(mr - mb, 2)
+        Dgb = torch.pow(mb - mg, 2)
+        k = torch.mean(torch.pow(torch.pow(Drg, 2) + torch.pow(Drb, 2) + torch.pow(Dgb, 2), 0.5))
+        return k
+
 class L_TV(nn.Module):
     def __init__(self,TVLoss_weight=1):
         super(L_TV,self).__init__()
@@ -94,7 +109,6 @@ class L_TV(nn.Module):
         h_tv = torch.pow((x[:,:,1:,:]-x[:,:,:h_x-1,:]),2).sum()
         w_tv = torch.pow((x[:,:,:,1:]-x[:,:,:,:w_x-1]),2).sum()
         return self.TVLoss_weight*2*(h_tv/count_h+w_tv/count_w)/batch_size
-
 class Sa_Loss(nn.Module):
     def __init__(self):
         super(Sa_Loss, self).__init__()
@@ -117,7 +131,9 @@ class Sa_Loss(nn.Module):
 class perception_loss(nn.Module):
     def __init__(self):
         super(perception_loss, self).__init__()
-        features = vgg16(pretrained=True).features
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        features = vgg16(pretrained=True).features.to(device)  # Переносим на GPU
+
         self.to_relu_1_2 = nn.Sequential()
         self.to_relu_2_2 = nn.Sequential()
         self.to_relu_3_3 = nn.Sequential()
@@ -136,14 +152,12 @@ class perception_loss(nn.Module):
         for param in self.parameters():
             param.requires_grad = False
 
+        self.device = device
+
     def forward(self, x):
+        x = x.to(self.device)  # Перемещаем входной тензор на тот же девайс
         h = self.to_relu_1_2(x)
-        h_relu_1_2 = h
         h = self.to_relu_2_2(h)
-        h_relu_2_2 = h
         h = self.to_relu_3_3(h)
-        h_relu_3_3 = h
         h = self.to_relu_4_3(h)
-        h_relu_4_3 = h
-        # out = (h_relu_1_2, h_relu_2_2, h_relu_3_3, h_relu_4_3)
-        return h_relu_4_3
+        return h

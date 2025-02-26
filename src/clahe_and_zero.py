@@ -147,17 +147,14 @@ def process_images(input_dir, model):
             score = (2.0 * delta_ssim) + (1.5 * delta_psnr) + (1.0 * delta_entropy) + (1.0 * delta_edge_intensity) + (
                         1.5 * delta_brisque)
 
-            # Выбор лучшего изображения по наибольшей разнице в пользу Zero-DCE
-            if (
-                    delta_ssim > 0 and delta_psnr > 0 and delta_entropy > 0 and delta_edge_intensity > 0 and delta_brisque > 0) and (
-                    score > best_combined_ssim):
-                best_combined_ssim = score
-                best_image_data = {
-                    "filename": filename,
-                    "original_image": original_float,
-                    "clahe_image": clahe_image,
-                    "zero_dce_image": (zero_dce_image * 255).astype(np.uint8)
-                }
+
+            best_combined_ssim = score
+            best_image_data = {
+                "filename": filename,
+                "original_image": original_float,
+                "clahe_image": clahe_image,
+                "zero_dce_image": (zero_dce_image * 255).astype(np.uint8)
+            }
 
             # Вывод метрик для каждого изображения
             print(f"Результаты для {filename}:")
@@ -166,6 +163,7 @@ def process_images(input_dir, model):
             print(f"  Zero-DCE - MSE: {zero_dce_mse:.4f}, PSNR: {zero_dce_psnr:.4f}, SSIM: {zero_dce_ssim_val:.4f}, "
                   f"Entropy: {zero_dce_entropy:.4f}, Edge Intensity: {zero_dce_edge_intensity:.4f}, BRISQUE: {zero_dce_brisque:.4f}")
             print("-" * 50)
+            break
 
     return (
     clahe_mse_list, clahe_psnr_list, clahe_ssim_list, clahe_entropy_list, clahe_edge_intensity_list, clahe_brisque_list,
@@ -247,7 +245,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Image Enhancement with Zero-DCE and CLAHE + Gamma Correction")
     parser.add_argument("--input_dir", type=str, default="C:/Users/sevda/PycharmProjects/Neural Network/Zero-DCE-improved_1/src/data/test_data/DICM/", help="Путь к директории с изображениями для обработки")
     parser.add_argument("--output_dir", type=str, default="best_images", help="Путь для сохранения лучших изображений")
-    parser.add_argument("--model_path", type=str, default="snapshots/Epoch200.pth", help="Путь к модели Zero-DCE")
+    parser.add_argument("--model_path", type=str, default="snapshots/Epoch10.pth", help="Путь к модели Zero-DCE")
 
     args = parser.parse_args()
     main(args.input_dir, args.output_dir, args.model_path)
