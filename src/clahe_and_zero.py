@@ -42,7 +42,7 @@ def enhance_with_zero_dce(model, image_path):
 
     enhanced_image = np.clip(enhanced_image, 0, 1)
     enhanced_image_uint8 = (enhanced_image * 255).astype(np.uint8)
-    gamma_corrected = gamma_trans(enhanced_image_uint8, 0.8)
+    gamma_corrected = gamma_trans(enhanced_image_uint8, 1.2) # 0.8
     gamma_corrected = gamma_corrected.astype(np.float32) / 255.0
 
     return gamma_corrected
@@ -240,7 +240,7 @@ def main(input_dir, output_dir, model_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Image Enhancement with Zero-DCE and CLAHE + Gamma Correction")
     parser.add_argument("--input_dir", type=str,
-                        default="C:/Users/sevda/PycharmProjects/Neural Network/Zero-DCE-improved_1/src/data/test_data/DICM/",
+                        default="C:/Users/sevda/PycharmProjects/Neural Network/Zero-DCE-improved_1/src/data/test_data/DICM/", #normal_maligant_benign_data
                         help="Путь к директории с изображениями")
     parser.add_argument("--output_dir", type=str, default="results",
                         help="Путь для сохранения обработанных изображений")

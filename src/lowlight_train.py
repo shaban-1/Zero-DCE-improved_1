@@ -51,7 +51,7 @@ def train(config):
 
             enhanced_image_1, enhanced_image, A = DCE_net(img_lowlight)
 
-            Loss_TV = 50 * L_TV(A)
+            Loss_TV = 100 * L_TV(A) #300 или 50
 
             loss_spa = 2 * torch.mean(L_spa(enhanced_image, img_lowlight))
 

@@ -43,7 +43,7 @@ def enhance_with_zero_dce(model, image_path):
     enhanced_image = np.clip(enhanced_image, 0, 1)
 
     enhanced_image_uint8 = (enhanced_image * 255).astype(np.uint8)
-    gamma_corrected = gamma_trans(enhanced_image_uint8, 0.8)
+    gamma_corrected = gamma_trans(enhanced_image_uint8, 1.2) # 0.8
     gamma_corrected = gamma_corrected.astype(np.float32) / 255.0
 
     return gamma_corrected
@@ -147,14 +147,17 @@ def process_images(input_dir, model):
             score = (2.0 * delta_ssim) + (1.5 * delta_psnr) + (1.0 * delta_entropy) + (1.0 * delta_edge_intensity) + (
                         1.5 * delta_brisque)
 
-
-            best_combined_ssim = score
-            best_image_data = {
-                "filename": filename,
-                "original_image": original_float,
-                "clahe_image": clahe_image,
-                "zero_dce_image": (zero_dce_image * 255).astype(np.uint8)
-            }
+            # Выбор лучшего изображения по наибольшей разнице в пользу Zero-DCE
+            if (
+                    delta_ssim > 0 and delta_psnr > 0 and delta_entropy > 0 and delta_edge_intensity > 0 and delta_brisque > 0) and (
+                    score > best_combined_ssim):
+                best_combined_ssim = score
+                best_image_data = {
+                    "filename": filename,
+                    "original_image": original_float,
+                    "clahe_image": clahe_image,
+                    "zero_dce_image": (zero_dce_image * 255).astype(np.uint8)
+                }
 
             # Вывод метрик для каждого изображения
             print(f"Результаты для {filename}:")
@@ -163,7 +166,7 @@ def process_images(input_dir, model):
             print(f"  Zero-DCE - MSE: {zero_dce_mse:.4f}, PSNR: {zero_dce_psnr:.4f}, SSIM: {zero_dce_ssim_val:.4f}, "
                   f"Entropy: {zero_dce_entropy:.4f}, Edge Intensity: {zero_dce_edge_intensity:.4f}, BRISQUE: {zero_dce_brisque:.4f}")
             print("-" * 50)
-            break
+            #break
 
     return (
     clahe_mse_list, clahe_psnr_list, clahe_ssim_list, clahe_entropy_list, clahe_edge_intensity_list, clahe_brisque_list,
