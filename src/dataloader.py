@@ -11,7 +11,7 @@ random.seed(1143)
 def populate_train_list(lowlight_images_path):
     image_list_lowlight = glob.glob(
         os.path.join(lowlight_images_path, "*.png"),
-        recursive=True  # Ищет во всех подпапках
+        recursive=True
     )
     image_list_lowlight = [f for f in image_list_lowlight if "_mask" not in f]
     random.shuffle(image_list_lowlight)

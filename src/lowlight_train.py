@@ -28,14 +28,7 @@ def train(config):
 
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=config.train_batch_size, shuffle=True,
                                                num_workers=config.num_workers, pin_memory=True)
-    L_spa = Myloss.L_spa()
-
-    L_exp = Myloss.L_exp(16, 0.6)
-    L_TV = Myloss.L_TV()
-
-    L_sa = Myloss.Sa_Loss()
-    L_cc = Myloss.Color_constancy_loss()
-    L_percept = Myloss.perception_loss()
+    criterion = Myloss.CustomLoss()
 
     optimizer = torch.optim.Adam(DCE_net.parameters(), lr=config.lr, weight_decay=config.weight_decay)
 
@@ -51,18 +44,8 @@ def train(config):
 
             enhanced_image_1, enhanced_image, A = DCE_net(img_lowlight)
 
-            Loss_TV = 100 * L_TV(A) #300 или 50
+            loss = criterion(enhanced_image, img_lowlight, A)
 
-            loss_spa = 2 * torch.mean(L_spa(enhanced_image, img_lowlight))
-
-            loss_exp = 1 * torch.mean(L_exp(enhanced_image))
-
-            loss_sa = torch.mean(L_sa(enhanced_image))
-            loss_cc = 2 * torch.mean(L_cc(enhanced_image))
-            loss_percept = 2 * torch.mean(L_percept(enhanced_image))
-
-            # best_loss
-            loss = Loss_TV + loss_spa  + loss_exp + loss_sa + loss_cc + loss_percept
             loss_list.append(loss.item())
 
             optimizer.zero_grad()
@@ -84,11 +67,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # Input Parameters
-    parser.add_argument('--lowlight_images_path', type=str, default="data/normal_maligant_benign_data/")
+    parser.add_argument('--lowlight_images_path', type=str, default="data/train_data/")
     parser.add_argument('--lr', type=float, default=0.0001)
     parser.add_argument('--weight_decay', type=float, default=0.0001)
     parser.add_argument('--grad_clip_norm', type=float, default=0.1)
-    parser.add_argument('--num_epochs', type=int, default=100)
+    parser.add_argument('--num_epochs', type=int, default=50)
     parser.add_argument('--train_batch_size', type=int, default=4)  # 8 => 4
     parser.add_argument('--val_batch_size', type=int, default=4)
     parser.add_argument('--num_workers', type=int, default=4)
