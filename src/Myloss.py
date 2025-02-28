@@ -16,13 +16,13 @@ class CustomLoss(nn.Module):
 
     def forward(self, enhanced_image, img_lowlight, A):
         Loss_TV = 100 * self.L_TV(A)
-        loss_spa = 1 * torch.mean(self.L_spa(enhanced_image, img_lowlight))
-        loss_exp = 0.5 * torch.mean(self.L_exp(enhanced_image))
-        loss_sa = 0.5 * torch.mean(self.L_sa(enhanced_image))
-        loss_cc = 1 * torch.mean(self.L_cc(enhanced_image))
-        loss_percept = 1 * torch.mean(self.L_percept(enhanced_image))
-        loss_entropy = 0.25 * self.L_entropy(F.log_softmax(enhanced_image, dim=1), F.softmax(img_lowlight, dim=1))
-        loss = Loss_TV + loss_spa + loss_exp + loss_sa + loss_cc + loss_percept + loss_entropy
+        loss_spa = 2 * torch.mean(self.L_spa(enhanced_image, img_lowlight))
+        loss_exp = 1 * torch.mean(self.L_exp(enhanced_image))
+        loss_sa =  torch.mean(self.L_sa(enhanced_image))
+        loss_cc = 2 * torch.mean(self.L_cc(enhanced_image))
+        loss_percept = 2 * torch.mean(self.L_percept(enhanced_image))
+        #loss_entropy = 0.25 * self.L_entropy(F.log_softmax(enhanced_image, dim=1), F.softmax(img_lowlight, dim=1))
+        loss = Loss_TV + loss_spa + loss_exp + loss_sa + loss_cc + loss_percept
         return loss
 
 
