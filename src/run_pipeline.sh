@@ -5,8 +5,7 @@ INPUT_FOLDER="./data/test_data/normal"
 DARK_IMAGES_FOLDER="./data/test_data/dark"
 LIGHT_IMAGES_FOLDER="./data/test_data/light"
 OUTPUT_DIR="results"
-MODEL_PATH="snapshots/Epoch3.pth"
-EPOCH_NUMBER = "50"
+MODEL_PATH="snapshots/Epoch50.pth"
 
 # Шаг 1: Очистка временных изображений если есть
 echo "Очистка временных изображений..."
@@ -27,7 +26,7 @@ fi
 
 # Шаг 3: Запуск тренировки модели (train.py)
 echo "Запуск тренировки модели..."
-python lowlight_train.py --lowlight_images_path "$DARK_IMAGES_FOLDER" --snapshots_folder "snapshots/" --num_epochs "$EPOCH_NUMBER"
+python lowlight_train.py --lowlight_images_path "$DARK_IMAGES_FOLDER"
 
 if [ $? -ne 0 ]; then
     echo "Ошибка при тренировке модели. Прерывание выполнения."
