@@ -2,10 +2,8 @@ import os
 import argparse
 import cv2
 import numpy as np
-from PIL import Image as PILImage
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
-from model import enhance_net_nopool
 from skimage.filters import sobel
 import torch
 import piq
